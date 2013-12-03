@@ -1,0 +1,49 @@
+--- origsrc/glade-3.14.2/glade-rules.mk	2012-11-01 19:46:23.000000000 -0500
++++ src/glade-3.14.2/glade-rules.mk	2013-11-19 01:29:10.440826800 -0600
+@@ -6,12 +6,12 @@
+ # .static.gresource.xml in which case it will be loaded automatically
+ 
+ %.h: %.gresource.xml
+-	$(GLIB_COMPILE_RESOURCES) --manual-register --generate $< --target=$@
++	$(GLIB_COMPILE_RESOURCES) --manual-register --generate --sourcedir=$(srcdir) $< --target=$@
+ %.c: %.gresource.xml
+-	$(GLIB_COMPILE_RESOURCES) --manual-register --generate $< --target=$@
++	$(GLIB_COMPILE_RESOURCES) --manual-register --generate --sourcedir=$(srcdir) $< --target=$@
+ 
+ # rule for static resources
+ %.h: %.static.gresource.xml
+-	$(GLIB_COMPILE_RESOURCES) --generate $< --target=$@
++	$(GLIB_COMPILE_RESOURCES) --generate --sourcedir=$(srcdir) $< --target=$@
+ %.c: %.static.gresource.xml
+-	$(GLIB_COMPILE_RESOURCES) --generate $< --target=$@
++	$(GLIB_COMPILE_RESOURCES) --generate --sourcedir=$(srcdir) $< --target=$@
+--- origsrc/glade-3.14.2/gladeui/Makefile.am	2012-11-26 07:21:34.000000000 -0600
++++ src/glade-3.14.2/gladeui/Makefile.am	2013-11-19 00:51:55.526997000 -0600
+@@ -30,7 +30,7 @@ endif
+ endif
+ 
+ glade-win32-res.o: glade-previewer.rc
+-	$(WINDRES) $< $@
++	$(WINDRES) -I$(srcdir) $< $@
+ 
+ ## Rest of the UI ;)
+ 
+--- origsrc/glade-3.14.2/src/Makefile.am	2013-11-19 01:30:00.320679700 -0600
++++ src/glade-3.14.2/src/Makefile.am	2013-11-19 01:30:12.581381000 -0600
+@@ -42,7 +42,7 @@ noinst_HEADERS = \
+ # This could be split in two, but its better to rebuild both, sources and header
+ # each time the xml or the actual resources files change, just in case. 
+ glade-resources.c glade-resources.h: glade-resources.gresource.xml \
+-	$(shell $(GLIB_COMPILE_RESOURCES) --generate-dependencies glade-resources.gresource.xml)
++	$(shell $(GLIB_COMPILE_RESOURCES) --generate-dependencies --sourcedir=$(srcdir) $(srcdir)/glade-resources.gresource.xml)
+ 
+ if NATIVE_WIN32
+ glade_LDADD += glade-win32-res.o
+@@ -55,6 +55,6 @@ endif
+ endif
+ 
+ glade-win32-res.o: glade.rc
+-	$(WINDRES) $< $@
++	$(AM_V_GEN)$(WINDRES) -I$(srcdir) $< $@
+ 
+ EXTRA_DIST = glade.rc.in glade-resources.gresource.xml glade.glade

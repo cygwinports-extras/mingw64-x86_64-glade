@@ -1,0 +1,24 @@
+CROSS_HOST="x86_64-w64-mingw32"
+ORIG_PN="glade"
+inherit cross gnome2
+
+NAME="mingw64-x86_64-glade"
+VERSION=3.14.3
+RELEASE=1
+CATEGORY="Devel"
+SUMMARY="GTK+-3.0 GUI designer for Win64 toolchain"
+DESCRIPTION="Glade is a RAD tool to enable quick & easy development of user
+interfaces for the GTK+ toolkit and the GNOME desktop environment. The user
+interfaces designed in Glade are stored in XML format, enabling easy
+integration with external tools."
+HOMEPAGE="http://glade.gnome.org/"
+
+PATCH_URI="3.14.2-vpath.patch"
+
+DEPEND="gnome-common gnome-doc-utils gtk-doc
+	pkgconfig(gtk+-3.0)
+	pkgconfig(libxml-2.0)"
+
+DIFF_EXCLUDES="glade-resources.[ch]"
+
+CYGCONF_ARGS="--disable-static --disable-python"
